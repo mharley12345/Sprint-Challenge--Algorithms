@@ -91,20 +91,73 @@ class SortingRobot:
         Returns True if the robot's light is on and False otherwise.
         """
         return self._light == "ON"
+    
+    #Helper Functions to use
+    def right_swap(self):
+        """
+        Swap element to right of current position
+        """
 
     def sort(self):
         """
         Sort the robot's list.
         """
         # Fill this out
-        pass
+        
+        # Robot needs to sort a list, based on its functions -> moving, swapping, comparing and turn light on/off
+        # Robot move right or left until it has stop
+        # Algorithm to use  -> selection sort
+        
+        #You can loop around the list endlessly, has to be stopped when sorting is complete
+
+        self.set_light_on() #initialize the robot sorting state and will allow us to break out of it
+
+        #lets loop through the list
+        while self.light_is_on() == True:
+            
+            #Robot starts at position [0] of the list 
+            #When the robot initially picks item, it leaves 'None' in the list
+            #We can use 'None' of the list as pivot to divide the list into left side as sorted while right side of pivot needs to sorted
+            #This may result multiple passes of list before it is done
+            #Performance could be slow
+            self.swap_item() #Initial Pickup
+            #Keep moving to the right to find smallest item 
+            while self.can_move_right():
+                self.move_right()
+                #Lets check the item being held is larger than item in the list
+                if self.compare_item() == 1:
+                    #Swapped it out for a smaller item
+                    self.swap_item()
+                #Lets keep going to right to see if we can another smaller item from the list
+            
+            #If we end up reaching end of right side of list, then we are carrying smallest item in the list, lets go place back where we pick the first item and swapped with 'None'
+
+            while self.can_move_left() == True and self.compare_item() != None:
+                self.move_left()
+
+            #We have now reach 'None' Our pivot, where we can swapped the smallest item in the List
+
+            self.swap_item()
+
+            #Now we move to right and swap the next item, and set 2nd position as new pivot and continue the loop. However, we will eventually reach the end of right side. 
+
+            #Move to next item right of pivot 'None' and start the process again
+            if self.can_move_right() == True:
+                self.move_right()
+            else:
+                #If we reach end of right side, then we have swapped all items correctly and robot is not holding anything, can finally rest
+                self.set_light_off()
+
+                    
+
+
 
 
 if __name__ == "__main__":
     # Test our your implementation from the command line
     # with `python robot_sort.py`
 
-    l = [15, 41, 58, 49, 26, 4, 28, 8, 61, 60, 65, 21, 78, 14, 35, 90, 54, 5, 0, 87, 82, 96, 43, 92, 62, 97, 69, 94, 99, 93, 76, 47, 2, 88, 51, 40, 95, 6, 23, 81, 30, 19, 25, 91, 18, 68, 71, 9, 66, 1, 45, 33, 3, 72, 16, 85, 27, 59, 64, 39, 32, 24, 38, 84, 44, 80, 11, 73, 42, 20, 10, 29, 22, 98, 17, 48, 52, 67, 53, 74, 77, 37, 63, 31, 7, 75, 36, 89, 70, 34, 79, 83, 13, 57, 86, 12, 56, 50, 55, 46]
+    l = [5,4,6,9]
 
     robot = SortingRobot(l)
 
